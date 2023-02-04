@@ -8,6 +8,8 @@ namespace LilsWorkApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddControllers();
+
             // Add services to the container.
             builder.Services.AddAuthorization();
 
@@ -45,6 +47,8 @@ namespace LilsWorkApi
                 forecast.Last().Summary = "Happy day!!!";
                 return forecast;
             });
+
+            app.MapControllers();
 
             app.Run();
         }
