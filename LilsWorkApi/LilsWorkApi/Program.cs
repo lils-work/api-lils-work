@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace LilsWorkApi
 {
     public class Program
@@ -9,6 +11,15 @@ namespace LilsWorkApi
             // Add services to the container.
             builder.Services.AddAuthorization();
 
+            #region Task
+
+            var connectionString = builder.Configuration["ConnectionStrings:taskConnection"];
+            builder.Services.AddDbContext<TaskDbContext>(optionsBuilder =>
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+            builder.Services.AddDataProtection();
+
+            #endregion
 
             var app = builder.Build();
 
