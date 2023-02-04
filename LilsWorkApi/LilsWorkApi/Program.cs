@@ -18,6 +18,8 @@ namespace LilsWorkApi
             #region Task
 
             var connectionString = builder.Configuration["ConnectionStrings:taskConnection"];
+            if (File.Exists("secretConnectionString.txt"))
+                connectionString = File.ReadAllText("secretConnectionString.txt");
             builder.Services.AddDbContext<TaskDbContext>(optionsBuilder =>
                 optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -26,7 +28,7 @@ namespace LilsWorkApi
             #endregion
 
             var app = builder.Build();
-            app.Logger.LogInformation(connectionString);
+            app.Logger.LogInformation("读到的连接字符串：" + connectionString);
 
             // Configure the HTTP request pipeline.
 
