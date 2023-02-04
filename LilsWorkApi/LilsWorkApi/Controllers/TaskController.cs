@@ -27,5 +27,48 @@ namespace LilsWorkApi.Controllers
             await dbContext.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), tasks);
         }
+
+        [HttpPut]
+        public async Task<ActionResult<Models.Task>> Put(Models.Task task)
+        {
+            dbContext.Entry(task).State = EntityState.Modified;
+
+            try
+            {
+                var found = await dbContext.Tasks.FindAsync(task.Id);
+                if (found == null)
+                    return NotFound();
+
+                found.Title = task.Title;
+                found.State = task.State;
+            }
+            catch (DbUpdateConcurrencyException) when (dbContext.Tasks.All(t => t.Id != task.Id))
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var found = await dbContext.Tasks.FindAsync(id);
+                if (found == null)
+                    return NotFound();
+
+                dbContext.Remove(found);
+                
+                await dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) when (dbContext.Tasks.All(t => t.Id != id))
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
