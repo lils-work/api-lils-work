@@ -7,6 +7,8 @@ namespace LilsWorkApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
 
             builder.Services.AddControllers();
 
@@ -24,6 +26,7 @@ namespace LilsWorkApi
             #endregion
 
             var app = builder.Build();
+            app.Logger.LogInformation(connectionString);
 
             // Configure the HTTP request pipeline.
 
