@@ -28,8 +28,6 @@ namespace LilsWorkApi
             #endregion
 
             var app = builder.Build();
-            app.Logger.LogInformation("got connection string: " + connectionString);
-            app.Logger.LogInformation("current dir: " + Directory.GetCurrentDirectory());
 
             // Configure the HTTP request pipeline.
 
