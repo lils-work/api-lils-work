@@ -41,6 +41,8 @@ namespace LilsWorkApi.Controllers
 
                 found.Title = task.Title;
                 found.State = task.State;
+
+                await dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException) when (dbContext.Tasks.All(t => t.Id != task.Id))
             {
