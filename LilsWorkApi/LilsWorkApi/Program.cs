@@ -15,6 +15,20 @@ namespace LilsWorkApi
             // Add services to the container.
             builder.Services.AddAuthorization();
 
+            #region CORS
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("allowpaired", builder =>
+                {
+                    builder.WithOrigins(
+                        "http://lils.work",
+                        "http://localhost:5173");
+                });
+            });
+
+            #endregion
+
             #region Task
 
             var connectionString = builder.Configuration["ConnectionStrings:taskConnection"];
@@ -53,6 +67,7 @@ namespace LilsWorkApi
             });
 
             app.MapControllers();
+            app.UseCors();
 
             app.Run();
         }

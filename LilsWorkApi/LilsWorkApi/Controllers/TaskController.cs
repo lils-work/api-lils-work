@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LilsWorkApi.Controllers
 {
     [ApiController]
+    [EnableCors("allowpaired")]
     [Route("[controller]")]
     public class TaskController : ControllerBase
     {
