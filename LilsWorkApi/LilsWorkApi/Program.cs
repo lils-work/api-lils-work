@@ -21,9 +21,12 @@ namespace LilsWorkApi
             {
                 options.AddPolicy("allowpaired", builder =>
                 {
-                    builder.WithOrigins(
-                        "http://lils.work",
-                        "http://localhost:5173");
+                    builder
+                        .WithOrigins(
+                            "http://lils.work",
+                            "http://localhost:5173")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
                 });
             });
 
