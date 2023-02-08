@@ -1,3 +1,4 @@
+using LilsWorkApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LilsWorkApi
@@ -41,6 +42,8 @@ namespace LilsWorkApi
                 optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             builder.Services.AddDataProtection();
+
+            builder.Services.AddHostedService<TaskGenerationService>();
 
             #endregion
 
