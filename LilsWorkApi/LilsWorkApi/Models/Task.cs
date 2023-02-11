@@ -6,7 +6,7 @@ namespace LilsWorkApi.Models
         public int Id { get; set; }
         public string? Title { get; set; }
         public TaskState State { get; set; } = TaskState.Todo;
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? DueTo { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? DueTo { get; set; }
     }
 }
