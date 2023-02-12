@@ -1,3 +1,4 @@
+using LilsWorkApi.Helpers;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,8 @@ namespace LilsWorkApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Models.Task>> Get()
         {
-            var tasks = await dbContext.Tasks.ToListAsync();
+            var tasks = await dbContext.Tasks.Where(t => t.DueTo >= DateTimeOffset.Now).ToListAsync();
+            tasks.ForEach(t => t.DueTo = t.DueTo.ToZone(TimeZoneHelper.CurrentTimeZone));
             return tasks;
         }
 

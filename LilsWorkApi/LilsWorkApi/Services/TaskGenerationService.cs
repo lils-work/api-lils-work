@@ -44,7 +44,7 @@ namespace LilsWorkApi.Services
             }));
 
             // TEST 每小时生成的周期性任务 - UTC+8 时间
-            var utc8now = DateTimeOffset.UtcNow.ToZone(+8);
+            var utc8now = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone);
             var utc8thishour = utc8now.Date.AddHours(utc8now.Hour);
             if (!dbContext.Tasks.Any(t => t.CreatedAt >= utc8thishour && t.Title != null && t.Title.StartsWith("HOUR TASK")))
             {
@@ -58,7 +58,7 @@ namespace LilsWorkApi.Services
             }
 
             // TEST 每天生成的周期性任务 - UTC+8 时间
-            var utc8today = DateTimeOffset.UtcNow.ToZone(+8).Date;
+            var utc8today = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone).Date;
             if (!dbContext.Tasks.Any(t => t.CreatedAt >= utc8today && t.Title != null && t.Title.StartsWith("DAILY TASK")))
             {
                 // 当天没有任务时，创建新任务
