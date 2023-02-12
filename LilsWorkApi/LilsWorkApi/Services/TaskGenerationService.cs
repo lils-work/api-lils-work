@@ -52,7 +52,7 @@ namespace LilsWorkApi.Services
                 dbContext.Tasks.Add(new Models.Task
                 {
                     Title = $"HOUR TASK {utc8thishour:MM.dd HH:mm:ss zzz}",
-                    CreatedAt = utc8thishour,
+                    CreatedAt = DateTime.Now,
                     DueTo = utc8thishour.AddHours(1),
                 });
             }
@@ -65,7 +65,7 @@ namespace LilsWorkApi.Services
                 dbContext.Tasks.Add(new Models.Task
                 {
                     Title = $"DAILY TASK {utc8today:MM.dd HH:mm:ss zzz}",
-                    CreatedAt = utc8today,
+                    CreatedAt = DateTime.Now,
                     DueTo = utc8today.AddDays(1),
                 });
             }
