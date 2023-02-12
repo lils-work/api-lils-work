@@ -29,46 +29,73 @@ namespace LilsWorkApi.Services
 
             var dbContext = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
 
-            // 添加周期为日的任务
-            var today = DateTime.Today;
-            var dueToday = today.AddDays(1).AddSeconds(-1);
+            // 每小时生成的周期性任务 - UTC+8 时间
+            var utc8now = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone);
+            var utc8thishour = utc8now.Date.AddHours(utc8now.Hour);
+            // 找到还没有创建的计划
+            var hourlyTaskPlansToAdd = dbContext.TaskPlans
+                .Where(tp => tp.Cycle == Models.PlanCycle.Hourly)
+                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thishour));
+            dbContext.Tasks.AddRange(hourlyTaskPlansToAdd.Select(tp => new Models.Task
+            {
+                Title = tp.Title,
+                CreatedAt = DateTime.Now,
+                DueTo = utc8thishour.AddHours(1),
+            }));
+
+            // TODO 后续任务考虑使用更低频的计时器，或专门提供周期性执行任务的辅助类
+
+            // 每天生成的周期性任务 - UTC+8 时间
+            var utc8today = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone).Date;
+            // 找到还没有创建的计划
             var dailyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Daily)
-                .Where(tp => !dbContext.Tasks.Any(t => t.DueTo > today && t.Title == tp.Title));
-
+                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8today));
             dbContext.Tasks.AddRange(dailyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
                 CreatedAt = DateTime.Now,
-                DueTo = dueToday,
+                DueTo = utc8today.AddDays(1),
             }));
 
-            // TEST 每小时生成的周期性任务 - UTC+8 时间
-            var utc8now = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone);
-            var utc8thishour = utc8now.Date.AddHours(utc8now.Hour);
-            if (!dbContext.Tasks.Any(t => t.CreatedAt >= utc8thishour && t.Title != null && t.Title.StartsWith("HOUR TASK")))
+            // 每周生成的周期性任务 - UTC+8 时间
+            var utc8thisweek = utc8now.ThisWeek();
+            // 找到还没有创建的计划
+            var weeklyTaskPlansToAdd = dbContext.TaskPlans
+                .Where(tp => tp.Cycle == Models.PlanCycle.Weekly)
+                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thisweek));
+            dbContext.Tasks.AddRange(weeklyTaskPlansToAdd.Select(tp => new Models.Task
             {
-                // 当前小时没有任务时，创建新任务
-                dbContext.Tasks.Add(new Models.Task
-                {
-                    Title = $"HOUR TASK {utc8thishour:MM.dd HH:mm:ss zzz}",
-                    CreatedAt = DateTime.Now,
-                    DueTo = utc8thishour.AddHours(1),
-                });
-            }
+                Title = tp.Title,
+                CreatedAt = DateTime.Now,
+                DueTo = utc8thisweek.AddDays(7),
+            }));
 
-            // TEST 每天生成的周期性任务 - UTC+8 时间
-            var utc8today = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone).Date;
-            if (!dbContext.Tasks.Any(t => t.CreatedAt >= utc8today && t.Title != null && t.Title.StartsWith("DAILY TASK")))
+            // 每月生成的周期性任务 - UTC+8 时间
+            var utc8thismonth = utc8now.ThisMonth();
+            // 找到还没有创建的计划
+            var monthlyTaskPlansToAdd = dbContext.TaskPlans
+                .Where(tp => tp.Cycle == Models.PlanCycle.Monthly)
+                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thismonth));
+            dbContext.Tasks.AddRange(monthlyTaskPlansToAdd.Select(tp => new Models.Task
             {
-                // 当天没有任务时，创建新任务
-                dbContext.Tasks.Add(new Models.Task
-                {
-                    Title = $"DAILY TASK {utc8today:MM.dd HH:mm:ss zzz}",
-                    CreatedAt = DateTime.Now,
-                    DueTo = utc8today.AddDays(1),
-                });
-            }
+                Title = tp.Title,
+                CreatedAt = DateTime.Now,
+                DueTo = utc8thismonth.AddMonths(1),
+            }));
+
+            // 每年生成的周期性任务 - UTC+8 时间
+            var utc8thisyear = utc8now.ThisYear();
+            // 找到还没有创建的计划
+            var yearlyTaskPlansToAdd = dbContext.TaskPlans
+                .Where(tp => tp.Cycle == Models.PlanCycle.Yearly)
+                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thisyear));
+            dbContext.Tasks.AddRange(yearlyTaskPlansToAdd.Select(tp => new Models.Task
+            {
+                Title = tp.Title,
+                CreatedAt = DateTime.Now,
+                DueTo = utc8thisyear.AddYears(1),
+            }));
 
             await dbContext.SaveChangesAsync();
         }
