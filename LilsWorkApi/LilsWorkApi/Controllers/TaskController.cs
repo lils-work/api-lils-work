@@ -19,8 +19,9 @@ namespace LilsWorkApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Models.Task>> Get()
         {
+            var yearlySummaryDay = DateTimeOffset.Now.AddDays(-DateTimeOffset.Now.DayOfYear).AddYears(1).AddDays(-31);
             var tasks = await dbContext.Tasks
-                .Where(t => t.DueTo >= DateTimeOffset.Now && ((t.DueTo - DateTimeOffset.Now).Value.Days <= 31))
+                .Where(t => t.DueTo >= DateTimeOffset.Now || (t.DueTo > yearlySummaryDay))
                 .ToListAsync();
             tasks.ForEach(t => t.DueTo = t.DueTo.ToZone(TimeZoneHelper.CurrentTimeZone));
             return tasks;
