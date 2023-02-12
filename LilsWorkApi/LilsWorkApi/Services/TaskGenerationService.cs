@@ -39,7 +39,6 @@ namespace LilsWorkApi.Services
             dbContext.Tasks.AddRange(dailyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
-                State = TaskState.Todo,
                 CreatedAt = DateTime.Now,
                 DueTo = dueToday,
             }));
@@ -53,7 +52,6 @@ namespace LilsWorkApi.Services
                 dbContext.Tasks.Add(new Models.Task
                 {
                     Title = $"HOUR TASK {utc8thishour:MM.dd HH:mm:ss zzz}",
-                    State = TaskState.Todo,
                     CreatedAt = utc8thishour,
                     DueTo = utc8thishour.AddHours(1),
                 });
@@ -67,18 +65,9 @@ namespace LilsWorkApi.Services
                 dbContext.Tasks.Add(new Models.Task
                 {
                     Title = $"DAILY TASK {utc8today:MM.dd HH:mm:ss zzz}",
-                    State = TaskState.Todo,
                     CreatedAt = utc8today,
                     DueTo = utc8today.AddDays(1),
                 });
-            }
-
-            // 标记过期的任务
-            var nextMinute = DateTime.Now.AddMinutes(1);
-            var incompleteTasks = dbContext.Tasks.Where(t => t.State == TaskState.Todo && t.DueTo != null && t.DueTo < nextMinute);
-            foreach (var task in incompleteTasks)
-            {
-                task.State = TaskState.Expired;
             }
 
             await dbContext.SaveChangesAsync();

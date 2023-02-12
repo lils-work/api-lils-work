@@ -42,7 +42,8 @@ namespace LilsWorkApi.Controllers
                     return NotFound();
 
                 found.Title = task.Title;
-                found.State = task.State;
+                found.IsCompleted = task.IsCompleted;
+                found.IsCancel= task.IsCancel;
 
                 await dbContext.SaveChangesAsync();
             }
