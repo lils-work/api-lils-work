@@ -19,7 +19,9 @@ namespace LilsWorkApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Models.Task>> Get()
         {
-            var tasks = await dbContext.Tasks.Where(t => t.DueTo >= DateTimeOffset.Now).ToListAsync();
+            var tasks = await dbContext.Tasks
+                .Where(t => t.DueTo >= DateTimeOffset.Now && ((t.DueTo - DateTimeOffset.Now).Value.Days <= 31))
+                .ToListAsync();
             tasks.ForEach(t => t.DueTo = t.DueTo.ToZone(TimeZoneHelper.CurrentTimeZone));
             return tasks;
         }
