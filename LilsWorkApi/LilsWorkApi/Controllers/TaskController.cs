@@ -20,7 +20,7 @@ namespace LilsWorkApi.Controllers
         public async Task<IEnumerable<Models.Task>> Get()
         {
             var dayafter31 = DateTimeOffset.Now.AddDays(31);
-            // 除了检查到期日是否超过，还判断到期日是否在 31 日内
+            // 闄や簡妫�鏌ュ埌鏈熸棩鏄惁瓒呰繃锛岃繕鍒ゆ柇鍒版湡鏃ユ槸鍚﹀湪 31 鏃ュ唴
             var tasks = await dbContext.Tasks
                 .Where(t => t.DueTo >= DateTimeOffset.Now && t.DueTo < dayafter31)
                 .ToListAsync();

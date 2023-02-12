@@ -3,8 +3,8 @@ using LilsWorkApi.Helpers;
 namespace LilsWorkApi.Services
 {
     /// <summary>
-    /// ÈÎÎñÉú³É·şÎñ£»
-    /// ´úÂë²Î¿¼ https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio#backgroundservice-base-class
+    /// ä»»åŠ¡ç”ŸæˆæœåŠ¡ï¼›
+    /// ä»£ç å‚è€ƒ https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-7.0&tabs=visual-studio#backgroundservice-base-class
     /// </summary>
     public class TaskGenerationService : IHostedService, IDisposable
     {
@@ -29,10 +29,10 @@ namespace LilsWorkApi.Services
 
             var dbContext = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
 
-            // Ã¿Ğ¡Ê±Éú³ÉµÄÖÜÆÚĞÔÈÎÎñ - UTC+8 Ê±¼ä
+            // æ¯å°æ—¶ç”Ÿæˆçš„å‘¨æœŸæ€§ä»»åŠ¡ - UTC+8 æ—¶é—´
             var utc8now = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone);
             var utc8thishour = utc8now.Date.AddHours(utc8now.Hour);
-            // ÕÒµ½»¹Ã»ÓĞ´´½¨µÄ¼Æ»®
+            // æ‰¾åˆ°è¿˜æ²¡æœ‰åˆ›å»ºçš„è®¡åˆ’
             var hourlyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Hourly)
                 .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thishour));
@@ -43,11 +43,11 @@ namespace LilsWorkApi.Services
                 DueTo = utc8thishour.AddHours(1),
             }));
 
-            // TODO ºóĞøÈÎÎñ¿¼ÂÇÊ¹ÓÃ¸üµÍÆµµÄ¼ÆÊ±Æ÷£¬»ò×¨ÃÅÌá¹©ÖÜÆÚĞÔÖ´ĞĞÈÎÎñµÄ¸¨ÖúÀà
+            // TODO åç»­ä»»åŠ¡è€ƒè™‘ä½¿ç”¨æ›´ä½é¢‘çš„è®¡æ—¶å™¨ï¼Œæˆ–ä¸“é—¨æä¾›å‘¨æœŸæ€§æ‰§è¡Œä»»åŠ¡çš„è¾…åŠ©ç±»
 
-            // Ã¿ÌìÉú³ÉµÄÖÜÆÚĞÔÈÎÎñ - UTC+8 Ê±¼ä
+            // æ¯å¤©ç”Ÿæˆçš„å‘¨æœŸæ€§ä»»åŠ¡ - UTC+8 æ—¶é—´
             var utc8today = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone).Date;
-            // ÕÒµ½»¹Ã»ÓĞ´´½¨µÄ¼Æ»®
+            // æ‰¾åˆ°è¿˜æ²¡æœ‰åˆ›å»ºçš„è®¡åˆ’
             var dailyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Daily)
                 .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8today));
@@ -58,9 +58,9 @@ namespace LilsWorkApi.Services
                 DueTo = utc8today.AddDays(1),
             }));
 
-            // Ã¿ÖÜÉú³ÉµÄÖÜÆÚĞÔÈÎÎñ - UTC+8 Ê±¼ä
+            // æ¯å‘¨ç”Ÿæˆçš„å‘¨æœŸæ€§ä»»åŠ¡ - UTC+8 æ—¶é—´
             var utc8thisweek = utc8now.ThisWeek();
-            // ÕÒµ½»¹Ã»ÓĞ´´½¨µÄ¼Æ»®
+            // æ‰¾åˆ°è¿˜æ²¡æœ‰åˆ›å»ºçš„è®¡åˆ’
             var weeklyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Weekly)
                 .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thisweek));
@@ -71,9 +71,9 @@ namespace LilsWorkApi.Services
                 DueTo = utc8thisweek.AddDays(7),
             }));
 
-            // Ã¿ÔÂÉú³ÉµÄÖÜÆÚĞÔÈÎÎñ - UTC+8 Ê±¼ä
+            // æ¯æœˆç”Ÿæˆçš„å‘¨æœŸæ€§ä»»åŠ¡ - UTC+8 æ—¶é—´
             var utc8thismonth = utc8now.ThisMonth();
-            // ÕÒµ½»¹Ã»ÓĞ´´½¨µÄ¼Æ»®
+            // æ‰¾åˆ°è¿˜æ²¡æœ‰åˆ›å»ºçš„è®¡åˆ’
             var monthlyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Monthly)
                 .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thismonth));
@@ -84,9 +84,9 @@ namespace LilsWorkApi.Services
                 DueTo = utc8thismonth.AddMonths(1),
             }));
 
-            // Ã¿ÄêÉú³ÉµÄÖÜÆÚĞÔÈÎÎñ - UTC+8 Ê±¼ä
+            // æ¯å¹´ç”Ÿæˆçš„å‘¨æœŸæ€§ä»»åŠ¡ - UTC+8 æ—¶é—´
             var utc8thisyear = utc8now.ThisYear();
-            // ÕÒµ½»¹Ã»ÓĞ´´½¨µÄ¼Æ»®
+            // æ‰¾åˆ°è¿˜æ²¡æœ‰åˆ›å»ºçš„è®¡åˆ’
             var yearlyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Yearly)
                 .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thisyear));
