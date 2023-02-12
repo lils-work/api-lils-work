@@ -19,9 +19,10 @@ namespace LilsWorkApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Models.Task>> Get()
         {
-            var yearlySummaryDay = DateTimeOffset.Now.AddDays(-DateTimeOffset.Now.DayOfYear).AddYears(1).AddDays(-31);
+            var dayafter31 = DateTimeOffset.Now.AddDays(31);
+            // 除了检查到期日是否超过，还判断到期日是否在 31 日内
             var tasks = await dbContext.Tasks
-                .Where(t => t.DueTo >= DateTimeOffset.Now || (t.DueTo > yearlySummaryDay))
+                .Where(t => t.DueTo >= DateTimeOffset.Now && t.DueTo < dayafter31)
                 .ToListAsync();
             tasks.ForEach(t => t.DueTo = t.DueTo.ToZone(TimeZoneHelper.CurrentTimeZone));
             return tasks;
