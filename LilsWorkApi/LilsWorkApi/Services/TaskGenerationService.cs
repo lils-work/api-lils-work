@@ -31,7 +31,7 @@ namespace LilsWorkApi.Services
 
             // 每小时生成的周期性任务 - UTC+8 时间
             var utc8now = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone);
-            var utc8thishour = utc8now.Date.AddHours(utc8now.Hour);
+            var utc8thishour = utc8now.ThisHour();
             // 找到还没有创建的计划
             var hourlyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Hourly)
@@ -39,14 +39,14 @@ namespace LilsWorkApi.Services
             dbContext.Tasks.AddRange(hourlyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thishour.AddHours(1),
             }));
 
             // TODO 后续任务考虑使用更低频的计时器，或专门提供周期性执行任务的辅助类
 
             // 每天生成的周期性任务 - UTC+8 时间
-            var utc8today = DateTimeOffset.UtcNow.ToZone(TimeZoneHelper.CurrentTimeZone).Date;
+            var utc8today = utc8now.ThisDay();
             // 找到还没有创建的计划
             var dailyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Daily)
@@ -54,7 +54,7 @@ namespace LilsWorkApi.Services
             dbContext.Tasks.AddRange(dailyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8today.AddDays(1),
             }));
 
@@ -67,7 +67,7 @@ namespace LilsWorkApi.Services
             dbContext.Tasks.AddRange(weeklyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thisweek.AddDays(7),
             }));
 
@@ -80,7 +80,7 @@ namespace LilsWorkApi.Services
             dbContext.Tasks.AddRange(monthlyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thismonth.AddMonths(1),
             }));
 
@@ -93,7 +93,7 @@ namespace LilsWorkApi.Services
             dbContext.Tasks.AddRange(yearlyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thisyear.AddYears(1),
             }));
 
