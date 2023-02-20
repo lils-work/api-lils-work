@@ -35,7 +35,7 @@ namespace LilsWorkApi.Services
             // 找到还没有创建的计划
             var hourlyTaskPlansToAdd = dbContext.TaskPlans
                 .Where(tp => tp.Cycle == Models.PlanCycle.Hourly)
-                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo >= utc8thishour));
+                .Where(tp => !dbContext.Tasks.Any(t => t.Title == tp.Title && t.DueTo > utc8thishour));
             dbContext.Tasks.AddRange(hourlyTaskPlansToAdd.Select(tp => new Models.Task
             {
                 Title = tp.Title,
