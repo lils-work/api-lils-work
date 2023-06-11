@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LilsWorkApi.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +47,9 @@ namespace LilsWorkApi
             builder.Services.AddHostedService<TaskGenerationService>();
 
             #endregion
+
+            builder.Services.AddControllersWithViews()
+                .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             var app = builder.Build();
 
