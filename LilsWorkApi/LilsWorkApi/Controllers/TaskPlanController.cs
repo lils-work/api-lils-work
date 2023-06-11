@@ -20,7 +20,9 @@ namespace LilsWorkApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<TaskPlan>> Get()
         {
-            var taskPlans = await dbContext.TaskPlans.ToListAsync();
+            var taskPlans = await dbContext.TaskPlans
+                .Include(p => p.Tasks)
+                .ToListAsync();
             return taskPlans;
         }
 

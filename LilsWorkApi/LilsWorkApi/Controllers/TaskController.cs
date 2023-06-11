@@ -23,6 +23,7 @@ namespace LilsWorkApi.Controllers
             // 除了检查到期日是否超过，还判断到期日是否在 31 日内
             var tasks = await dbContext.Tasks
                 .Where(t => t.DueTo >= DateTimeOffset.Now && t.DueTo < dayafter31)
+                .Include(t => t.Plan)
                 .ToListAsync();
             tasks.ForEach(t => t.DueTo = t.DueTo.ToZone(TimeZoneHelper.CurrentTimeZone));
             return tasks;

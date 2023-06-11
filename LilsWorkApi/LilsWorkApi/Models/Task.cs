@@ -13,6 +13,6 @@ namespace LilsWorkApi.Models
         public bool IsCancel { get; set; } = false;
         public DateTimeOffset? CreatedAt { get; set; }
         public DateTimeOffset? DueTo { get; set; }
-        public TaskPlan? Plan { get; set; }
+        public virtual TaskPlan? Plan { get; set; }
     }
 }
