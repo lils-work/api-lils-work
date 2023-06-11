@@ -8,6 +8,7 @@ namespace LilsWorkApi.Models
         public int Id { get; set; }
         public string? Title { get; set; }
         [Column(TypeName = "nvarchar(12)")]
-        public PlanCycle Cycle { get; set; }  
+        public PlanCycle Cycle { get; set; }
+        public List<Task> Tasks { get; set; } = new List<Task>();
     }
 }

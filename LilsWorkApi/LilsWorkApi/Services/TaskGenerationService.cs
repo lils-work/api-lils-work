@@ -41,6 +41,7 @@ namespace LilsWorkApi.Services
                 Title = tp.Title,
                 CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thishour.AddHours(1),
+                Plan = tp,
             }));
 
             // TODO 后续任务考虑使用更低频的计时器，或专门提供周期性执行任务的辅助类
@@ -56,6 +57,7 @@ namespace LilsWorkApi.Services
                 Title = tp.Title,
                 CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8today.AddDays(1),
+                Plan = tp,
             }));
 
             // 每周生成的周期性任务 - UTC+8 时间
@@ -69,6 +71,7 @@ namespace LilsWorkApi.Services
                 Title = tp.Title,
                 CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thisweek.AddDays(7),
+                Plan = tp,
             }));
 
             // 每月生成的周期性任务 - UTC+8 时间
@@ -82,6 +85,7 @@ namespace LilsWorkApi.Services
                 Title = tp.Title,
                 CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thismonth.AddMonths(1),
+                Plan = tp,
             }));
 
             // 每年生成的周期性任务 - UTC+8 时间
@@ -95,6 +99,7 @@ namespace LilsWorkApi.Services
                 Title = tp.Title,
                 CreatedAt = DateTimeOffset.Now,
                 DueTo = utc8thisyear.AddYears(1),
+                Plan = tp,
             }));
 
             await dbContext.SaveChangesAsync();
